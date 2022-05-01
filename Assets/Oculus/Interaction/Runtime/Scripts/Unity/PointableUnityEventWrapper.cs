@@ -37,15 +37,13 @@ namespace Oculus.Interaction
         private UnityEvent _whenUnselect;
         [SerializeField]
         private UnityEvent _whenMove;
-        [SerializeField]
-        private UnityEvent _whenCancel;
 
         public UnityEvent WhenHover => _whenHover;
         public UnityEvent WhenUnhover => _whenUnhover;
         public UnityEvent WhenSelect => _whenSelect;
         public UnityEvent WhenUnselect => _whenUnselect;
         public UnityEvent WhenMove => _whenMove;
-        public UnityEvent WhenCancel => _whenCancel;
+
 
         protected bool _started = false;
 
@@ -65,7 +63,7 @@ namespace Oculus.Interaction
         {
             if (_started)
             {
-                Pointable.WhenPointerEventRaised += HandlePointerEventRaised;
+                Pointable.OnPointerEvent += HandlePointerEvent;
             }
         }
 
@@ -73,11 +71,11 @@ namespace Oculus.Interaction
         {
             if (_started)
             {
-                Pointable.WhenPointerEventRaised -= HandlePointerEventRaised;
+                Pointable.OnPointerEvent -= HandlePointerEvent;
             }
         }
 
-        private void HandlePointerEventRaised(PointerArgs args)
+        private void HandlePointerEvent(PointerArgs args)
         {
             switch (args.PointerEvent)
             {
@@ -95,9 +93,6 @@ namespace Oculus.Interaction
                     break;
                 case PointerEvent.Move:
                     _whenMove.Invoke();
-                    break;
-                case PointerEvent.Cancel:
-                    _whenCancel.Invoke();
                     break;
             }
         }

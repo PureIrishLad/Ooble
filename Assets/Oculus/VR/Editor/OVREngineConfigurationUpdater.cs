@@ -19,7 +19,7 @@ limitations under the License.
 
 ************************************************************************************/
 
-#if USING_XR_MANAGEMENT && (USING_XR_SDK_OCULUS || USING_XR_SDK_OPENXR)
+#if USING_XR_MANAGEMENT && USING_XR_SDK_OCULUS
 #define USING_XR_SDK
 #endif
 

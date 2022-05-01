@@ -20,6 +20,9 @@ public class AnchorUIManager : MonoBehaviour
     public enum AnchorMode { Create, Select };
 
     [SerializeField]
+    private GameObject mainMenu_ = null;
+
+    [SerializeField]
     private GameObject createModeButton_;
     [SerializeField]
     private GameObject selectModeButton_;

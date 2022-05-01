@@ -24,7 +24,7 @@ namespace Oculus.Interaction
         [SerializeField]
         private bool _grabFlag;
 
-        public event Action<PointerArgs> WhenPointerEventRaised = delegate { };
+        public event Action<PointerArgs> OnPointerEvent;
 
         private UniqueIdentifier _id;
         private bool _currentlyGrabbing;
@@ -41,25 +41,24 @@ namespace Oculus.Interaction
                 _currentlyGrabbing = _grabFlag;
                 if (_currentlyGrabbing)
                 {
-                    WhenPointerEventRaised(new PointerArgs(_id.ID, PointerEvent.Hover,
-                        transform.GetPose()));
-                    WhenPointerEventRaised(new PointerArgs(_id.ID, PointerEvent.Select,
-                        transform.GetPose()));
+                    OnPointerEvent(new PointerArgs(_id.ID, PointerEvent.Hover, transform.position,
+                        transform.rotation));
+                    OnPointerEvent(new PointerArgs(_id.ID, PointerEvent.Select, transform.position,
+                        transform.rotation));
                 }
                 else
                 {
-                    WhenPointerEventRaised(new PointerArgs(_id.ID, PointerEvent.Unselect,
-                        transform.GetPose()));
-                    WhenPointerEventRaised(new PointerArgs(_id.ID, PointerEvent.Unhover,
-                        transform.GetPose()));
+                    OnPointerEvent(new PointerArgs(_id.ID, PointerEvent.Unselect, transform.position,
+                        transform.rotation));
+                    OnPointerEvent(new PointerArgs(_id.ID, PointerEvent.Unhover, transform.position, transform.rotation));
                 }
                 return;
             }
 
             if (_currentlyGrabbing)
             {
-                WhenPointerEventRaised(new PointerArgs(_id.ID, PointerEvent.Move,
-                    transform.GetPose()));
+                OnPointerEvent(new PointerArgs(_id.ID, PointerEvent.Move, transform.position,
+                    transform.rotation));
             }
         }
 

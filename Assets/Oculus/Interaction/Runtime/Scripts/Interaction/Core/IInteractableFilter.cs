@@ -10,10 +10,10 @@ ANY KIND, either express or implied. See the License for the specific language g
 permissions and limitations under the License.
 ************************************************************************************/
 
-using System;
-
-namespace Oculus.Interaction.Deprecated
+namespace Oculus.Interaction
 {
-    [Obsolete]
-    public interface IInteractableFilter { }
+    public interface IInteractableFilter
+    {
+        bool FilterInteractable(IInteractable interactable);
+    }
 }

@@ -13,6 +13,7 @@ permissions and limitations under the License.
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Oculus.Interaction
 {
@@ -129,7 +130,8 @@ namespace Oculus.Interaction
 
         #region Inject
 
-        public void InjectAllInteractableUnityEventWrapper(IInteractableView interactableView)
+        public void InjectAllInteractableUnityEventWrapper(
+            IInteractableView<IInteractorView> interactableView)
         {
             InjectInteractableView(interactableView);
         }

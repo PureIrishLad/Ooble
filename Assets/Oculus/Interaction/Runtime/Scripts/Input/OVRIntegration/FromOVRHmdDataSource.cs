@@ -18,16 +18,13 @@ using UnityEngine.XR;
 
 namespace Oculus.Interaction.Input
 {
-    public class FromOVRHmdDataSource : DataSource<HmdDataAsset>
+    public class FromOVRHmdDataSource : DataSource<HmdDataAsset, HmdDataSourceConfig>
     {
         [Header("OVR Data Source")]
         [SerializeField, Interface(typeof(IOVRCameraRigRef))]
         private MonoBehaviour _cameraRigRef;
 
         public IOVRCameraRigRef CameraRigRef { get; private set; }
-
-        [SerializeField]
-        private bool _processLateUpdates = false;
 
         [SerializeField]
         [Tooltip("If true, uses OVRManager.headPoseRelativeOffset rather than sensor data for " +
@@ -38,18 +35,6 @@ namespace Oculus.Interaction.Input
         [SerializeField, Interface(typeof(ITrackingToWorldTransformer))]
         private MonoBehaviour _trackingToWorldTransformer;
         private ITrackingToWorldTransformer TrackingToWorldTransformer;
-
-        public bool ProcessLateUpdates
-        {
-            get
-            {
-                return _processLateUpdates;
-            }
-            set
-            {
-                _processLateUpdates = value;
-            }
-        }
 
         private HmdDataAsset _hmdDataAsset = new HmdDataAsset();
         private HmdDataSourceConfig _config;
@@ -62,61 +47,25 @@ namespace Oculus.Interaction.Input
 
         protected override void Start()
         {
-            this.BeginStart(ref _started, base.Start);
+            base.Start();
             Assert.IsNotNull(CameraRigRef);
             Assert.IsNotNull(TrackingToWorldTransformer);
-            this.EndStart(ref _started);
+            InitConfig();
         }
-
-        protected override void OnEnable()
+        private void InitConfig()
         {
-            base.OnEnable();
-            if (_started)
-            {
-                CameraRigRef.WhenInputDataDirtied += HandleInputDataDirtied;
-            }
-        }
-
-        protected override void OnDisable()
-        {
-            if (_started)
-            {
-                CameraRigRef.WhenInputDataDirtied -= HandleInputDataDirtied;
-            }
-
-            base.OnDisable();
-        }
-
-        private void HandleInputDataDirtied(bool isLateUpdate)
-        {
-            if (isLateUpdate && !_processLateUpdates)
+            if (_config != null)
             {
                 return;
             }
-            MarkInputDataRequiresUpdate();
-        }
-
-        private HmdDataSourceConfig Config
-        {
-            get
+            _config = new HmdDataSourceConfig()
             {
-                if (_config != null)
-                {
-                    return _config;
-                }
-
-                _config = new HmdDataSourceConfig()
-                {
-                    TrackingToWorldTransformer = TrackingToWorldTransformer
-                };
-
-                return _config;
-            }
+                TrackingToWorldTransformer = TrackingToWorldTransformer
+            };
         }
 
         protected override void UpdateData()
         {
-            _hmdDataAsset.Config = Config;
             bool hmdPresent = OVRNodeStateProperties.IsHmdPresent();
             ref var centerEyePose = ref _hmdDataAsset.Root;
             if (_useOvrManagerEmulatedPose)
@@ -131,7 +80,7 @@ namespace Oculus.Interaction.Input
             }
             else
             {
-                var previousEyePose = Pose.identity;
+                var previousEyePose = new Pose();
 
                 if (_hmdDataAsset.IsTracked)
                 {
@@ -166,6 +115,21 @@ namespace Oculus.Interaction.Input
         }
 
         protected override HmdDataAsset DataAsset => _hmdDataAsset;
+
+        // It is important that this creates an object on the fly, as it is possible it is called
+        // from other components Awake methods.
+        public override HmdDataSourceConfig Config
+        {
+            get
+            {
+                if (_config == null)
+                {
+                    InitConfig();
+                }
+
+                return _config;
+            }
+        }
 
         #region Inject
 

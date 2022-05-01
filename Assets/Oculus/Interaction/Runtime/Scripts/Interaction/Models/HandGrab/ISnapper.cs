@@ -22,15 +22,21 @@ namespace Oculus.Interaction.HandPosing
     /// </summary>
     public enum SnapType
     {
-        AttractToHand,
-        AnchorAtHand,
-        Custom
-    }
-
-    public enum HandAlignType
-    {
-        AlignOnGrab,
-        AttractOnHover,
+        /// <summary>
+        /// Move the object towards the hand after the user starts a grab
+        /// </summary>
+        ObjectToHand,
+        /// <summary>
+        /// Move the hand towards the object and stay
+        /// </summary>
+        HandToObject,
+        /// <summary>
+        /// Move the hand towards the object and return to the original position
+        /// </summary>
+        HandToObjectAndReturn,
+        /// <summary>
+        /// Keeps both object and hand at the same distance while grabbed
+        /// </summary>
         None
     }
 
@@ -43,7 +49,7 @@ namespace Oculus.Interaction.HandPosing
     {
         bool IsSnapping { get; }
         float SnapStrength { get; }
-        Pose WristToSnapOffset { get; }
+        Pose WristToGripOffset { get; }
         HandFingerFlags SnappingFingers();
         ISnapData SnapData { get; }
         System.Action<ISnapper> WhenSnapStarted { get; set; }
@@ -57,8 +63,10 @@ namespace Oculus.Interaction.HandPosing
     public interface ISnappable
     {
         Transform RelativeTo { get; }
-        HandAlignType HandAlignment { get; }
+        SnapType SnapType { get; }
+
         Collider[] Colliders { get; }
+        float ReleaseDistance { get; }
 
         bool UsesHandPose();
     }
@@ -69,7 +77,7 @@ namespace Oculus.Interaction.HandPosing
     /// </summary>
     public interface ISnapData
     {
-        HandAlignType HandAlignment { get; }
+        SnapType SnapType { get; }
         HandPose HandPose { get; }
         Pose WorldSnapPose { get; }
     }

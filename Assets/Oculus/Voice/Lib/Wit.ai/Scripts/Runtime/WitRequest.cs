@@ -74,10 +74,9 @@ namespace Facebook.WitAi
 
         public const string URI_SCHEME = "https";
         public const string URI_AUTHORITY = "api.wit.ai";
-        public const int URI_DEFAULT_PORT = 0;
 
         public const string WIT_API_VERSION = "20210928";
-        public const string WIT_SDK_VERSION = "0.0.30";
+        public const string WIT_SDK_VERSION = "0.0.25";
 
         public const string WIT_ENDPOINT_SPEECH = "speech";
         public const string WIT_ENDPOINT_MESSAGE = "message";
@@ -89,13 +88,14 @@ namespace Facebook.WitAi
 
         private WitConfiguration configuration;
 
+        private Stream activeStream;
+
         private string command;
         private string path;
 
         public QueryParam[] queryParams;
 
-        //private HttpWebRequest request;
-        private IRequest _request;
+        private HttpWebRequest request;
         private HttpWebResponse response;
 
         private WitResponseNode responseData;
@@ -107,9 +107,6 @@ namespace Facebook.WitAi
         public string postContentType;
 
         private object streamLock = new object();
-
-        private int bytesWritten;
-        private bool requestRequiresBody;
 
         /// <summary>
         /// Callback called when a response is received from the server
@@ -144,17 +141,6 @@ namespace Facebook.WitAi
         /// NOTE: This response comes back on a different thread.
         /// </summary>
         public Action<string> onFullTranscription;
-
-        public delegate void PreSendRequestDelegate(ref Uri src_uri, out Dictionary<string,string> headers);
-
-        /// <summary>
-        /// Allows customization of the request before it is sent out.
-        ///
-        /// Note: This is for devs who are routing requests to their servers
-        /// before sending data to Wit.ai. This allows adding any additional
-        /// headers, url modifications, or customization of the request.
-        /// </summary>
-        public static PreSendRequestDelegate onPreSendRequest;
 
         public delegate Uri OnCustomizeUriEvent(UriBuilder uriBuilder);
         /// <summary>
@@ -199,8 +185,6 @@ namespace Facebook.WitAi
         public string StatusDescription => statusDescription;
 
         public int Timeout => configuration ? configuration.timeoutMS : 10000;
-
-        public IRequest RequestProvider { get; internal set; }
 
         private static string operatingSystem;
         private static string deviceModel;
@@ -285,9 +269,9 @@ namespace Facebook.WitAi
             uriBuilder.Host = endpointConfig.Authority;
 
             var api = endpointConfig.WitApiVersion;
-            if (endpointConfig.Port > 0)
+            if (endpointConfig.port > 0)
             {
-                uriBuilder.Port = endpointConfig.Port;
+                uriBuilder.Port = endpointConfig.port;
             }
 
             uriBuilder.Query = $"v={api}";
@@ -327,45 +311,33 @@ namespace Facebook.WitAi
                 return;
             }
 
-            //allow app to intercept request and potentially modify uri or add custom headers
-            //NOTE: the callback depends on knowing the original Uri, before it is modified
-            Dictionary<string, string> customHeaders = null;
-            if (onPreSendRequest != null)
-            {
-                onPreSendRequest(ref uri, out customHeaders);
-            }
+            request = (HttpWebRequest) WebRequest.Create(uri);
 
-            WrapHttpWebRequest wr = new WrapHttpWebRequest((HttpWebRequest)WebRequest.Create(uri));
-
-            //request = (IRequest)(HttpWebRequest) WebRequest.Create(uri);
-            _request = wr;
             if (isServerAuthRequired)
             {
-                _request.Headers["Authorization"] =
+                request.Headers["Authorization"] =
                     $"Bearer {serverToken}";
             }
             else
             {
-                _request.Headers["Authorization"] =
+                request.Headers["Authorization"] =
                     $"Bearer {configuration.clientAccessToken.Trim()}";
             }
 
             if (null != postContentType)
             {
-                _request.Method = "POST";
-                _request.ContentType = postContentType;
-                _request.ContentLength = postData.Length;
+                request.Method = "POST";
+                request.ContentType = postContentType;
+                request.ContentLength = postData.Length;
             }
 
             // Configure additional headers
             if (WitEndpointConfig.GetEndpointConfig(configuration).Speech == command)
             {
-                _request.ContentType = audioEncoding.ToString();
-                _request.Method = "POST";
-                _request.SendChunked = true;
+                request.ContentType = audioEncoding.ToString();
+                request.Method = "POST";
+                request.SendChunked = true;
             }
-
-            requestRequiresBody = RequestRequiresBody(command);
 
             var configId = "not-yet-configured";
 #if UNITY_EDITOR
@@ -381,43 +353,34 @@ namespace Facebook.WitAi
             }
 #endif
 
-            _request.UserAgent = $"voice-sdk-39.0.0.70.369,wit-unity-{WIT_SDK_VERSION},{operatingSystem},{deviceModel},{configId},{appIdentifier}";
+            request.UserAgent = $"voice-sdk-37.0.0.112.109,wit-unity-{WIT_SDK_VERSION},{operatingSystem},{deviceModel},{configId},{appIdentifier}";
 
 #if UNITY_EDITOR
-            _request.UserAgent += ",Editor";
+            request.UserAgent += ",Editor";
 #else
-            _request.UserAgent += ",Runtime";
+            request.UserAgent += ",Runtime";
 #endif
 
             requestStartTime = DateTime.UtcNow;
             isActive = true;
             statusCode = 0;
             statusDescription = "Starting request";
-            _request.Timeout = configuration ? configuration.timeoutMS : 10000;
+            request.Timeout = configuration ? configuration.timeoutMS : 10000;
             WatchMainThreadCallbacks();
 
             if (null != onProvideCustomHeaders)
             {
                 foreach (var header in onProvideCustomHeaders())
                 {
-                    _request.Headers[header.Key] = header.Value;
+                    request.Headers[header.Key] = header.Value;
                 }
             }
 
-            //apply any modified headers last, as this allows us to overwrite headers if need be
-            if (customHeaders != null)
+            if (request.Method == "POST")
             {
-                foreach (var pair in customHeaders)
-                {
-                    _request.Headers[pair.Key] = pair.Value;
-                }
-            }
-
-            if (_request.Method == "POST")
-            {
-                var getRequestTask = _request.BeginGetRequestStream(HandleRequestStream, _request);
+                var getRequestTask = request.BeginGetRequestStream(HandleRequestStream, request);
                 ThreadPool.RegisterWaitForSingleObject(getRequestTask.AsyncWaitHandle,
-                    HandleTimeoutTimer, _request, Timeout, true);
+                    HandleTimeoutTimer, request, Timeout, true);
             }
             else
             {
@@ -425,16 +388,11 @@ namespace Facebook.WitAi
             }
         }
 
-        private bool RequestRequiresBody(string command)
-        {
-            return command == WitEndpointConfig.GetEndpointConfig(configuration).Speech;
-        }
-
         private void StartResponse()
         {
-            var result = _request.BeginGetResponse(HandleResponse, _request);
+            var result = request.BeginGetResponse(HandleResponse, request);
             ThreadPool.RegisterWaitForSingleObject(result.AsyncWaitHandle, HandleTimeoutTimer,
-                _request, Timeout, true);
+                request, Timeout, true);
         }
 
         private void HandleTimeoutTimer(object state, bool timedout)
@@ -442,9 +400,8 @@ namespace Facebook.WitAi
             if (!timedout) return;
 
             // Clean up the current request if it is still going
-            //var request = (HttpWebRequest) state;
-            var request = (IRequest)state;
-            if (null != _request)
+            var request = (HttpWebRequest) state;
+            if (null != this.request)
             {
                 Debug.Log("Request timed out after " + (DateTime.UtcNow - requestStartTime));
                 request.Abort();
@@ -468,7 +425,7 @@ namespace Facebook.WitAi
             responseStarted = true;
             try
             {
-                response = (HttpWebResponse) _request.EndGetResponse(ar);
+                response = (HttpWebResponse) request.EndGetResponse(ar);
 
                 statusCode = (int) response.StatusCode;
                 statusDescription = response.StatusDescription;
@@ -624,12 +581,10 @@ namespace Facebook.WitAi
         private void HandleRequestStream(IAsyncResult ar)
         {
             StartResponse();
-            var stream = _request.EndGetRequestStream(ar);
-            bytesWritten = 0;
+            var stream = request.EndGetRequestStream(ar);
 
             if (null != postData)
             {
-                bytesWritten += postData.Length;
                 stream.Write(postData, 0, postData.Length);
                 CloseRequestStream();
             }
@@ -651,7 +606,6 @@ namespace Facebook.WitAi
 
         private void ExecuteWriteThread(object obj)
         {
-            bytesWritten = 0;
             Stream stream = (Stream) obj;
 
             try
@@ -682,12 +636,6 @@ namespace Facebook.WitAi
             {
                 Debug.LogError(e);
             }
-
-            if (requestRequiresBody && bytesWritten == 0)
-            {
-                Debug.LogWarning("Stream was closed with no data written. Aborting request.");
-                AbortRequest();
-            }
         }
 
         private void FlushBuffer(Stream stream)
@@ -696,7 +644,6 @@ namespace Facebook.WitAi
             {
                 if (writeBuffer.TryDequeue(out var buffer))
                 {
-                    bytesWritten += buffer.Length;
                     stream.Write(buffer, 0, buffer.Length);
                 }
             }
@@ -725,8 +672,9 @@ namespace Facebook.WitAi
 
         public void AbortRequest()
         {
-            CloseActiveStream();
-            _request.Abort();
+            CloseRequestStream();
+            Debug.Log("Abort");
+            request.Abort();
             statusCode = ERROR_CODE_ABORTED;
             statusDescription = "Request was aborted";
             isActive = false;
@@ -738,19 +686,6 @@ namespace Facebook.WitAi
         /// If a post method was used, this will need to be called before the request will complete.
         /// </summary>
         public void CloseRequestStream()
-        {
-            if (requestRequiresBody && bytesWritten == 0)
-            {
-                AbortRequest();
-                Debug.LogWarning("Stream was closed with no data written. Aborting request.");
-            }
-            else
-            {
-                CloseActiveStream();
-            }
-        }
-
-        private void CloseActiveStream()
         {
             lock (streamLock)
             {
@@ -780,7 +715,6 @@ namespace Facebook.WitAi
         private bool _performing = false;
         // All actions
         private ConcurrentQueue<Action> _mainThreadCallbacks = new ConcurrentQueue<Action>();
-
         // Called from background thread
         private void MainThreadCallback(Action action)
         {

@@ -380,8 +380,14 @@ namespace Oculus.Interaction.HandPosing.Editor
 
         private void CreateThumbUpStates(AnimatorController animator, int layerIndex, HandClips clips)
         {
-            AnimatorState thumbupState = animator.AddMotion(clips.thumbUp, layerIndex);
-            animator.layers[layerIndex].stateMachine.defaultState = thumbupState;
+            BlendTree blendTree;
+            AnimatorState flexState = animator.CreateBlendTreeInController("Thumbs Up", out blendTree, layerIndex);
+            blendTree.blendType = BlendTreeType.Simple1D;
+            blendTree.blendParameter = FLEX_PARAM;
+            blendTree.AddChild(clips.handCap, 0f);
+            blendTree.AddChild(clips.thumbUp, 1f);
+            blendTree.useAutomaticThresholds = true;
+            animator.layers[layerIndex].stateMachine.defaultState = flexState;
         }
 
         private void CreatePointStates(AnimatorController animator, int layerIndex, HandClips clips)

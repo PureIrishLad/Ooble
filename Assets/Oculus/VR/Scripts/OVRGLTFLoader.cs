@@ -101,7 +101,6 @@ public class OVRGLTFLoader
 		OVRGLTFScene scene = new OVRGLTFScene();
 		m_Nodes = new List<GameObject>();
 
-		int rootNodeId = 0;
 		if (ValidateGLB(m_glbStream))
 		{
 			byte[] jsonChunkData = ReadChunk(m_glbStream, OVRChunkType.JSON);
@@ -125,13 +124,13 @@ public class OVRGLTFLoader
 					m_Shader = Shader.Find("Legacy Shaders/Diffuse");
 				}
 
-				rootNodeId = LoadGLTF(loadMips);
+				LoadGLTF(loadMips);
 			}
 		}
 		m_glbStream.Close();
 
 		scene.nodes = m_Nodes;
-		scene.root = m_Nodes[rootNodeId];
+		scene.root = m_Nodes[0];
 
 		scene.root.transform.Rotate(Vector3.up, 180.0f);
 
@@ -208,7 +207,7 @@ public class OVRGLTFLoader
 		return true;
 	}
 
-	private int LoadGLTF(bool loadMips)
+	private void LoadGLTF(bool loadMips)
 	{
 		if (m_jsonData == null)
 		{
@@ -233,12 +232,11 @@ public class OVRGLTFLoader
 		// Limit loading to just the first scene in the glTF
 		var mainScene = scenes[0];
 		var rootNodes = mainScene["nodes"].AsArray;
-
-		// Limit loading to first root node in the scene
-		int rootNodeId = rootNodes[0].AsInt;
-		ProcessNode(m_jsonData["nodes"][rootNodeId], rootNodeId, loadMips);
-
-		return rootNodeId;
+		for (int i = 0; i < rootNodes.Count; i++)
+		{
+			int nodeId = rootNodes[i].AsInt;
+			ProcessNode(m_jsonData["nodes"][nodeId], nodeId, loadMips);
+		}
 	}
 
 	private void ProcessNode(JSONNode node, int nodeId, bool loadMips)

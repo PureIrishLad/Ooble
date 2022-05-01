@@ -21,31 +21,27 @@ namespace Oculus.Interaction
         Unhover,
         Select,
         Unselect,
-        Move,
-        Cancel
+        Move
     }
 
     public struct PointerArgs
     {
         public int Identifier { get; }
         public PointerEvent PointerEvent { get; }
-        public Pose Pose { get; }
+        public Vector3 Position { get; }
+        public Quaternion Rotation { get; }
 
-        public PointerArgs(int identifier, PointerEvent pointerEvent, Pose pose)
+        public PointerArgs(int identifier, PointerEvent pointerEvent, Vector3 position, Quaternion rotation)
         {
             this.Identifier = identifier;
             this.PointerEvent = pointerEvent;
-            this.Pose = pose;
+            this.Position = position;
+            this.Rotation = rotation;
         }
     }
 
     public interface IPointable
     {
-        event Action<PointerArgs> WhenPointerEventRaised;
-    }
-
-    public interface IPointableElement : IPointable
-    {
-        void ProcessPointerEvent(PointerArgs args);
+        event Action<PointerArgs> OnPointerEvent;
     }
 }

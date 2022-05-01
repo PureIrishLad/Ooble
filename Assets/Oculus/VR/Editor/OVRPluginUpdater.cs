@@ -19,7 +19,7 @@ limitations under the License.
 
 ************************************************************************************/
 
-#if USING_XR_MANAGEMENT && (USING_XR_SDK_OCULUS || USING_XR_SDK_OPENXR)
+#if USING_XR_MANAGEMENT && USING_XR_SDK_OCULUS
 #define USING_XR_SDK
 #endif
 
@@ -38,7 +38,7 @@ using System.IO;
 using System.Diagnostics;
 
 [InitializeOnLoad]
-public class OVRPluginUpdater
+class OVRPluginUpdater
 {
 	enum PluginPlatform
 	{
@@ -63,13 +63,11 @@ public class OVRPluginUpdater
 
 		public bool IsEnabled()
 		{
-			foreach (PluginPlatform platform in Enum.GetValues(typeof(PluginPlatform)))
+			// TODO: Check each individual platform rather than using the Win64 DLL status for the overall package status.
+			string path = "";
+			if (Plugins.TryGetValue(PluginPlatform.Win64, out path))
 			{
-				string path = "";
-				if (Plugins.TryGetValue(platform, out path) && File.Exists(path))
-				{
-					return true;
-				}
+				return File.Exists(path);
 			}
 
 			return false;
@@ -245,7 +243,7 @@ public class OVRPluginUpdater
 		{
 			unityRunningInBatchmode = true;
 		}
-
+ 
 		if (enableAndroidUniversalSupport)
 		{
 			unityVersionSupportsAndroidUniversal = true;
@@ -309,7 +307,7 @@ public class OVRPluginUpdater
 		return GetUtilitiesRootPath() + @"/Plugins";
 	}
 
-	public static string GetUtilitiesRootPath()
+	private static string GetUtilitiesRootPath()
 	{
 		var so = ScriptableObject.CreateInstance(typeof(OVRPluginUpdaterStub));
 		var script = MonoScript.FromScriptableObject(so);
@@ -1198,8 +1196,8 @@ public class OVRPluginUpdater
 					// Android Universal should only be enabled on supported Unity versions since it can prevent app launch.
 					return false;
 				}
-				else if (!pluginPkg.IsAndroidUniversalEnabled() && pluginPkg.IsAndroidUniversalPresent() &&
-					!pluginPkg.IsAndroidOpenXREnabled() && pluginPkg.IsAndroidOpenXRPresent() &&
+				else if (!pluginPkg.IsAndroidUniversalEnabled() && pluginPkg.IsAndroidUniversalPresent() && 
+					!pluginPkg.IsAndroidOpenXREnabled() && pluginPkg.IsAndroidOpenXRPresent() && 
 					unityVersionSupportsAndroidUniversal)
 				{
 					// Android Universal is present and should be enabled on supported Unity versions since ARM64 config will fail otherwise.

@@ -11,6 +11,8 @@ permissions and limitations under the License.
 ************************************************************************************/
 
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Oculus.Interaction
 {
@@ -20,11 +22,16 @@ namespace Oculus.Interaction
         public InteractableState NewState;
     }
 
+    public interface IComponent
+    {
+        GameObject gameObject { get; }
+    }
+
     /// <summary>
     /// An IInteractableView defines the view for an object that can be
     /// interacted with.
     /// </summary>
-    public interface IInteractableView
+    public interface IInteractableView : IComponent
     {
         InteractableState State { get; }
         event Action<InteractableStateChangeArgs> WhenStateChanged;
@@ -47,7 +54,38 @@ namespace Oculus.Interaction
     {
         void Enable();
         void Disable();
+        void RemoveInteractorById(int id);
         new int MaxInteractors { get; set; }
         new int MaxSelectingInteractors { get; set; }
+    }
+
+    /// <summary>
+    /// An IInteractableView{out TInteractor} defines additional members for IInteractableView
+    /// that expose the concrete types interacting with this object.
+    /// </summary>
+    public interface IInteractableView<out TInteractor> : IInteractableView
+    {
+        IEnumerable<TInteractor> Interactors { get; }
+        IEnumerable<TInteractor> SelectingInteractors { get; }
+        MAction<TInteractor> WhenInteractorAdded { get; }
+        MAction<TInteractor> WhenInteractorRemoved { get; }
+        MAction<TInteractor> WhenSelectingInteractorAdded { get; }
+        MAction<TInteractor> WhenSelectingInteractorRemoved { get; }
+    }
+
+    /// <summary>
+    /// An Interactable{TInteractor} can have its set of Concrete Interactors
+    /// modified by an external party.
+    /// </summary>
+    public interface IInteractable<TInteractor> : IInteractable, IInteractableView<TInteractor>
+    {
+        bool IsPotentialCandidateFor(TInteractor interactor);
+        bool HasInteractor(TInteractor interactor);
+        void AddInteractor(TInteractor interactor);
+        void RemoveInteractor(TInteractor interactor);
+
+        bool HasSelectingInteractor(TInteractor interactor);
+        void AddSelectingInteractor(TInteractor interactor);
+        void RemoveSelectingInteractor(TInteractor interactor);
     }
 }

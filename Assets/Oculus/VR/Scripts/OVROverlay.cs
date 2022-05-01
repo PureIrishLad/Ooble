@@ -878,18 +878,11 @@ public class OVROverlay : MonoBehaviour
 
 	void InitOVROverlay()
 	{
-#if USING_XR_SDK_OPENXR
-		if (!OVRPlugin.UnityOpenXR.Enabled)
+		if (!OVRManager.isHmdPresent)
 		{
-#endif
-			if (!OVRManager.isHmdPresent)
-			{
-				enabled = false;
-				return;
-			}
-#if USING_XR_SDK_OPENXR
+			enabled = false;
+			return;
 		}
-#endif
 
 		constructedOverlayXRDevice = OVRManager.XRDevice.Unknown;
 		if (OVRManager.loadedXRDevice == OVRManager.XRDevice.OpenVR)

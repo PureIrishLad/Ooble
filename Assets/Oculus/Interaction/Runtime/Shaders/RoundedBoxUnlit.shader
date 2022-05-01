@@ -22,9 +22,6 @@ Shader "Interaction/RoundedBoxUnlit"
 
         // radius corners
         _Radii("Radii", Vector) = (0, 0, 0, 0)
-
-        // defaults to LEqual
-        [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest("ZTest", Float) = 4
     }
 
     SubShader
@@ -32,7 +29,6 @@ Shader "Interaction/RoundedBoxUnlit"
         Tags {"Queue"="Transparent" "RenderType"="Transparent"}
         ZWrite Off
         Blend SrcAlpha OneMinusSrcAlpha
-        ZTest [_ZTest]
         LOD 100
 
         Pass

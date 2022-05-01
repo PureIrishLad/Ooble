@@ -73,9 +73,5 @@ namespace Facebook.WitAi.Events
 
         [Tooltip("Message received when a complete transcription is received.")]
         public WitTranscriptionEvent OnFullTranscription = new WitTranscriptionEvent();
-
-        [Header("Data")]
-        public WitByteDataEvent OnByteDataReady = new WitByteDataEvent();
-        public WitByteDataEvent OnByteDataSent = new WitByteDataEvent();
     }
  }

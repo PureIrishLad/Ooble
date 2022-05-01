@@ -33,16 +33,16 @@ namespace Oculus.Interaction.Samples
 
         protected virtual void Update()
         {
-            GameObject shouldHideHandComponent = null;
+            GameObject volume = null;
 
             if (_handGrabInteractor.State == InteractorState.Select)
             {
-                shouldHideHandComponent = _handGrabInteractor.SelectedInteractable?.gameObject;
+                volume = _handGrabInteractor.SelectedInteractable?.gameObject;
             }
 
-            if (shouldHideHandComponent)
+            if (volume)
             {
-                if (shouldHideHandComponent.TryGetComponent(out ShouldHideHandOnGrab component))
+                if (volume.TryGetComponent(out ShouldHideHandOnGrab component))
                 {
                     _handVisual.ForceOffVisibility = true;
                 }

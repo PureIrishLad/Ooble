@@ -223,7 +223,7 @@ public class SpatialAnchorSession : AnchorSession
         ulong eraseRequest = 0;
         if (!OVRPlugin.SpatialEntityEraseSpatialEntity(ref anchorHandle, OVRPlugin.SpatialEntityStorageLocation.Local, ref eraseRequest))
         {
-            Log("OVRPlugin.SpatialEntityEraseSpatialEntity failed for anchorHandle " + anchorHandle);
+            Log("OVRPlugin.SpatialEntityEraseSpatialEntity initiated for anchorHandle " + anchorHandle);
         }
     }
 
@@ -275,7 +275,7 @@ public class SpatialAnchorSession : AnchorSession
         ulong newReqId = 0;
         if (!OVRPlugin.SpatialEntityQuerySpatialEntity(queryInfo, ref newReqId))
         {
-            Log("OVRPlugin.SpatialEntityQuerySpatialEntity failed");
+            Log("OVRPlugin.SpatialEntityQuerySpatialEntity initiated");
         }
     }
 
@@ -295,7 +295,7 @@ public class SpatialAnchorSession : AnchorSession
         ulong newReqId = 0;
         if (!OVRPlugin.SpatialEntityQuerySpatialEntity(queryInfo, ref newReqId))
         {
-            Log("OVRPlugin.SpatialEntityQuerySpatialEntity failed");
+            Log("OVRPlugin.SpatialEntityQuerySpatialEntity initiated");
         }
     }
 
@@ -305,7 +305,7 @@ public class SpatialAnchorSession : AnchorSession
         ulong saveRequest = 0;
         if (!OVRPlugin.SpatialEntitySaveSpatialEntity(ref anchorHandle, OVRPlugin.SpatialEntityStorageLocation.Local, OVRPlugin.SpatialEntityStoragePersistenceMode.IndefiniteHighPri, ref saveRequest))
         {
-            Log("OVRPlugin.SpatialEntitySaveSpatialEntity failed for anchorHandle " + anchorHandle + " location " + location);
+            Log("OVRPlugin.SpatialEntitySaveSpatialEntity initiated for anchorHandle " + anchorHandle + " location " + location);
         }
     }
 }
