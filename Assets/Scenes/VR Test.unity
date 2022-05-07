@@ -523,6 +523,11 @@ Rigidbody:
   m_CorrespondingSourceObject: {fileID: 3458006434031820414, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
   m_PrefabInstance: {fileID: 3458006434100627619}
   m_PrefabAsset: {fileID: 0}
+--- !u!136 &288286914 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 3458006434658636951, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+  m_PrefabInstance: {fileID: 3458006434100627619}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &322209575
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,6 +928,41 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &498012840 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 3458006433458335214, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+  m_PrefabInstance: {fileID: 3458006434100627619}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &608418616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 608418617}
+  m_Layer: 0
+  m_Name: Broom Snap Offset
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &608418617
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608418616}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: -0.7071068, w: 0}
+  m_LocalPosition: {x: 0, y: 0.9, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 180, y: 90, z: 0}
 --- !u!1001 &683160085
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1159,6 +1199,36 @@ Transform:
   - {fileID: 1744715790}
   m_Father: {fileID: 0}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &714544893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 714544894}
+  m_Layer: 0
+  m_Name: Bat Snap Offset
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &714544894
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714544893}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &728624136
 PrefabInstance:
@@ -1420,6 +1490,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8793428259486384420, guid: 7102355e072a41f46b36957d41e9c6ca, type: 3}
   m_PrefabInstance: {fileID: 1201203488}
   m_PrefabAsset: {fileID: 0}
+--- !u!136 &1223278644 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 3458006433010041161, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+  m_PrefabInstance: {fileID: 3458006434100627619}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1295023362
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1516,6 +1591,11 @@ MonoBehaviour:
 Transform:
   m_CorrespondingSourceObject: {fileID: 8793428259486384420, guid: 7102355e072a41f46b36957d41e9c6ca, type: 3}
   m_PrefabInstance: {fileID: 1295023362}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &1397392668 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 3458006433290425633, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+  m_PrefabInstance: {fileID: 3458006434100627619}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1400360300
 PrefabInstance:
@@ -1617,6 +1697,11 @@ MonoBehaviour:
 Transform:
   m_CorrespondingSourceObject: {fileID: 8793428259486384420, guid: 7102355e072a41f46b36957d41e9c6ca, type: 3}
   m_PrefabInstance: {fileID: 1400360300}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &1514274447 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 3458006433231973127, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+  m_PrefabInstance: {fileID: 3458006434100627619}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1586492397
 PrefabInstance:
@@ -2486,17 +2571,49 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+      propertyPath: m_snapOffset
+      value: 
+      objectReference: {fileID: 714544894}
+    - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
       propertyPath: m_snapPosition
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+      propertyPath: m_snapOrientation
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
       propertyPath: m_grabPoints.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
       propertyPath: m_grabPoints.Array.data[0]
       value: 
+      objectReference: {fileID: 1514274447}
+    - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+      propertyPath: m_grabPoints.Array.data[1]
+      value: 
       objectReference: {fileID: 15517391}
+    - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+      propertyPath: m_grabPoints.Array.data[2]
+      value: 
+      objectReference: {fileID: 15517391}
+    - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+      propertyPath: m_grabPoints.Array.data[3]
+      value: 
+      objectReference: {fileID: 1223278644}
+    - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+      propertyPath: m_grabPoints.Array.data[4]
+      value: 
+      objectReference: {fileID: 1397392668}
+    - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+      propertyPath: m_grabPoints.Array.data[5]
+      value: 
+      objectReference: {fileID: 498012840}
+    - target: {fileID: 3458006434031820413, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
+      propertyPath: m_grabPoints.Array.data[6]
+      value: 
+      objectReference: {fileID: 288286914}
     - target: {fileID: 3458006434031820414, guid: b21680f76d1242a4d95f13a17040fbb0, type: 3}
       propertyPath: m_CollisionDetection
       value: 0
@@ -3295,8 +3412,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6306327460051288738, guid: 13e4dfb9105fce044a8ec1bcb056bab1, type: 3}
+      propertyPath: m_snapOffset
+      value: 
+      objectReference: {fileID: 608418617}
+    - target: {fileID: 6306327460051288738, guid: 13e4dfb9105fce044a8ec1bcb056bab1, type: 3}
       propertyPath: m_snapPosition
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6306327460051288738, guid: 13e4dfb9105fce044a8ec1bcb056bab1, type: 3}
+      propertyPath: m_snapOrientation
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6306327460051288739, guid: 13e4dfb9105fce044a8ec1bcb056bab1, type: 3}
       propertyPath: m_RootOrder
