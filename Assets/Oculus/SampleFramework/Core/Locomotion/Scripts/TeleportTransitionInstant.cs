@@ -15,12 +15,17 @@ using System.Collections;
 /// </summary>
 public class TeleportTransitionInstant : TeleportTransition
 {
+    public Rigidbody[] ignore;
+
     /// <summary>
     /// When the teleport state is entered, simply move the player to the new location
     /// without any delay or other side effects.
     /// </summary>
     protected override void LocomotionTeleportOnEnterStateTeleporting()
 	{
+        foreach (Rigidbody rigidbody in ignore)
+            rigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+
 		LocomotionTeleport.DoTeleport();
-	}
+    }
 }

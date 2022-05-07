@@ -1,78 +1,131 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class OobleAI : MonoBehaviour
 {
-    public GameObject player;
-    public float runProximity;
-    public float runDistance;
-    public float rotateSpeed;
-    public float maxSpeed;
+    private GameObject player; // The player
 
-    private float velocity = 0;
-    public float acceleration;
+    public float maxSpeed; // Maximum running speed
+    private bool wasRunning; // Was the Ooble running last frame
+    private bool running; // Is running
 
-    private bool running;
+    public float knockoutSpeed = 2f; // How fast the player needs to swing to knockout the Ooble
+    private bool knockedOut = false; // True if the Ooble is knocked out
+    public Material red; // The material applied to the Ooble after being knocked out
 
-    public float knockoutSpeed = 2f;
-    private bool knockedOut = false;
+    private Rigidbody rb; // This objects rigidbody
+    private Renderer oobleRenderer; // This objects renderer
 
-    public Material red;
-    private Rigidbody rb;
+    public Node currentNode;
+    public Node targetNode;
+    public List<Node> path = new List<Node>();
+    public int pathIndex = 0;
+
+    private List<Node> painted = new List<Node>();
+    private WaypointGraph waypointGraph;
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         rb = GetComponent<Rigidbody>();
+        oobleRenderer = GetComponent<Renderer>();
+        waypointGraph = GameObject.FindGameObjectWithTag("WaypointGraph").GetComponent<WaypointGraph>();
+
+        GameObject closest = null;
+        float closestDistance = float.MaxValue;
+
+        foreach (GameObject node in waypointGraph.nodes)
+        {
+            if (Vector3.Distance(transform.position, node.transform.position) < closestDistance)
+            {
+                closestDistance = Vector3.Distance(transform.position, node.transform.position);
+                closest = node;
+            }
+        }
+
+        currentNode = closest.GetComponent<Node>();
+        targetNode = currentNode;
+        path.Add(currentNode);
     }
 
     private void Update()
     {
         if (!knockedOut)
         {
-            if (Vector3.Distance(transform.position, player.transform.position) <= runProximity || Vector3.Distance(transform.position, player.transform.position) <= runProximity + runDistance && running)
+            if (pathIndex == path.Count)
             {
-                running = true;
-                Vector3 targetDir = transform.position - player.transform.position;
-                targetDir.y = 0;
-                float singleStep = rotateSpeed * Time.deltaTime;
+                while (targetNode == currentNode)
+                    targetNode = waypointGraph.nodes[Random.Range(0, waypointGraph.nodes.Length)].GetComponent<Node>();
+                painted.Clear();
+                path.Clear();
+                path = GreedySearch(currentNode, targetNode, new List<Node>());
 
-                Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDir, singleStep, 0.0f);
-                Debug.DrawRay(transform.position, newDirection, Color.red);
-                transform.rotation = Quaternion.LookRotation(newDirection);
+                pathIndex = 0;
 
-                velocity += acceleration * Time.deltaTime;
-                velocity = Mathf.Min(velocity, maxSpeed);
-
-                transform.position += transform.forward * velocity * Time.deltaTime;
-
-                rb.angularVelocity = Vector3.zero;
+                path.Reverse();
             }
-            else
+
+            transform.LookAt(path[pathIndex].transform);
+            transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+
+            rb.AddForce(transform.forward * 6f * Time.deltaTime);
+
+            Vector3 pos = path[pathIndex].transform.position;
+            pos.y = transform.position.y;
+
+            if (Vector3.Distance(transform.position, pos) < 0.2f)
             {
-                velocity = 0;
-                running = false;
-                rb.angularVelocity = Vector3.zero;
+                currentNode = path[pathIndex];
+                pathIndex++;
             }
+
+            if (rb.velocity.magnitude > 7.0f)
+                rb.velocity = rb.velocity.normalized * 7.0f;
         }
         else
         {
-            velocity = 0;
             running = false;
-
-            GetComponent<Renderer>().material = red;
+            oobleRenderer.material = red;
         }
+    }
+
+    private List<Node> GreedySearch(Node start, Node end, List<Node> path)
+    {
+        Node current = start;
+
+        foreach (Edge edge in current.edges)
+        {
+            if (!painted.Contains(edge.connectedNode))
+            {
+                painted.Add(edge.connectedNode);
+
+                if (edge.connectedNode == end)
+                {
+                    path.Add(edge.connectedNode);
+                    return path;
+                }
+
+                path = GreedySearch(edge.connectedNode, end, path).ToList();
+
+                if (path.Count > 0)
+                {
+                    path.Add(edge.connectedNode);
+                    return path;
+                }
+            }
+        }
+
+        return path;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.rigidbody != null)
-            if (collision.rigidbody.tag == "Bat" || collision.rigidbody.tag == "Broom")
-                if (collision.rigidbody.velocity.magnitude >= knockoutSpeed)
-                {
-                    GetComponent<OVRGrabbable>().enabled = true;
-                    knockedOut = true;
-                }
+        if (collision.rigidbody != null && collision.rigidbody.velocity.magnitude >= knockoutSpeed && (collision.rigidbody.tag == "Bat" || collision.rigidbody.tag == "Broom"))
+        {
+            GetComponent<OVRGrabbable>().enabled = true;
+            knockedOut = true;
+        }
     }
 }

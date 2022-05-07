@@ -97,14 +97,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3df393900b56504e883f0306ded342b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  runProximity: 1.25
-  runDistance: 10
-  rotateSpeed: 10
   maxSpeed: 5
-  acceleration: 1
   knockoutSpeed: 2
   red: {fileID: 2100000, guid: 15a5874b920402f4ab2fd9496dd6141d, type: 2}
+  currentNode: {fileID: 0}
+  targetNode: {fileID: 0}
+  path: []
+  pathIndex: 0
 --- !u!54 &-5577645544560044053
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -120,7 +119,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &4396031430172961708
 MonoBehaviour:
   m_ObjectHideFlags: 0

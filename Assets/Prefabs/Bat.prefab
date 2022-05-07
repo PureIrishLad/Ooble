@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 3458006434031820412}
   - component: {fileID: 3458006434031820413}
   - component: {fileID: 3458006434031820414}
-  - component: {fileID: -442984965443046865}
+  - component: {fileID: 7106407138609156458}
   m_Layer: 3
   m_Name: Bat
   m_TagString: Bat
@@ -493,8 +493,8 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &-442984965443046865
+  m_CollisionDetection: 2
+--- !u!114 &7106407138609156458
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -503,18 +503,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3458006434031820415}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb929e1b5bb94174591ae955e529a279, type: 3}
+  m_Script: {fileID: 11500000, guid: abfa9ab5883edbb42b64b2199c9c671a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ttb: {fileID: 0}
-  colliders:
-  - {fileID: 3458006434281759693}
-  - {fileID: 3458006433231973127}
-  - {fileID: 3458006434383451030}
-  - {fileID: 3458006433010041161}
-  - {fileID: 3458006433290425633}
-  - {fileID: 3458006433458335214}
-  - {fileID: 3458006434658636951}
 --- !u!1 &3458006434281759695
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Bat
   - Broom
+  - Node
+  - WaypointGraph
   layers:
   - Default
   - TransparentFX
