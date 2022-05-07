@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -5577645544560044053}
   - component: {fileID: 4396031430172961708}
   - component: {fileID: 6740592618057663556}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: Ooble
   m_TagString: Untagged
   m_Icon: {fileID: 0}

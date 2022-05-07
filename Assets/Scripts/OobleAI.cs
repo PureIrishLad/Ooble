@@ -8,8 +8,7 @@ public class OobleAI : MonoBehaviour
     private GameObject player; // The player
 
     public float maxSpeed; // Maximum running speed
-    private bool wasRunning; // Was the Ooble running last frame
-    private bool running; // Is running
+    public bool running; // Is running
 
     public float knockoutSpeed = 2f; // How fast the player needs to swing to knockout the Ooble
     private bool knockedOut = false; // True if the Ooble is knocked out
@@ -18,10 +17,8 @@ public class OobleAI : MonoBehaviour
     private Rigidbody rb; // This objects rigidbody
     private Renderer oobleRenderer; // This objects renderer
 
-    public Node currentNode;
-    public Node targetNode;
-    public List<Node> path = new List<Node>();
-    public int pathIndex = 0;
+    public List<Node> path = new List<Node>(); // The path the Ooble will traverse
+    public int pathIndex = 0; // The current node in the path the Ooble is at
 
     private List<Node> painted = new List<Node>();
     private WaypointGraph waypointGraph;
@@ -33,6 +30,7 @@ public class OobleAI : MonoBehaviour
         oobleRenderer = GetComponent<Renderer>();
         waypointGraph = GameObject.FindGameObjectWithTag("WaypointGraph").GetComponent<WaypointGraph>();
 
+        // Finding the node closest to the ooble
         GameObject closest = null;
         float closestDistance = float.MaxValue;
 
@@ -45,52 +43,53 @@ public class OobleAI : MonoBehaviour
             }
         }
 
-        currentNode = closest.GetComponent<Node>();
-        targetNode = currentNode;
-        path.Add(currentNode);
+        path.Add(closest.GetComponent<Node>());
     }
 
     private void Update()
     {
-        if (!knockedOut)
+        if (!knockedOut && running)
         {
+            // If we have reached the final node in the path, generate a new one
             if (pathIndex == path.Count)
             {
-                while (targetNode == currentNode)
-                    targetNode = waypointGraph.nodes[Random.Range(0, waypointGraph.nodes.Length)].GetComponent<Node>();
+                // Generating a new goal node
+                Node randomNode = waypointGraph.nodes[Random.Range(0, waypointGraph.nodes.Length)].GetComponent<Node>();
+                while (randomNode == path[pathIndex - 1])
+                    randomNode = waypointGraph.nodes[Random.Range(0, waypointGraph.nodes.Length)].GetComponent<Node>();
+
                 painted.Clear();
-                path.Clear();
-                path = GreedySearch(currentNode, targetNode, new List<Node>());
+                path = GreedySearch(path[pathIndex - 1], randomNode, new List<Node>());
 
                 pathIndex = 0;
 
                 path.Reverse();
             }
 
+            // Moving towards the next node
             transform.LookAt(path[pathIndex].transform);
             transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-
             rb.AddForce(transform.forward * 6f * Time.deltaTime);
 
+            // If we have reached the current node, move towards the next one
             Vector3 pos = path[pathIndex].transform.position;
             pos.y = transform.position.y;
-
             if (Vector3.Distance(transform.position, pos) < 0.2f)
             {
-                currentNode = path[pathIndex];
                 pathIndex++;
             }
 
             if (rb.velocity.magnitude > 7.0f)
                 rb.velocity = rb.velocity.normalized * 7.0f;
         }
-        else
+        else if (knockedOut)
         {
             running = false;
             oobleRenderer.material = red;
         }
     }
 
+    // Greedy Search pathfinding algorithm
     private List<Node> GreedySearch(Node start, Node end, List<Node> path)
     {
         Node current = start;
