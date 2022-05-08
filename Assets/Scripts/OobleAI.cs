@@ -127,4 +127,9 @@ public class OobleAI : MonoBehaviour
             knockedOut = true;
         }
     }
+
+    public void OnDiscovered()
+    {
+        running = true;
+    }
 }

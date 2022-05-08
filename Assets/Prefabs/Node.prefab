@@ -95,3 +95,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   edges: []
+  waypointGraph: {fileID: 0}
+  pregenerate: 1

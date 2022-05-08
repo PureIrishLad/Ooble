@@ -6,19 +6,40 @@ using System.Linq;
 public class Node : MonoBehaviour
 {
     public Edge[] edges; // Each edge going from this node
+    public WaypointGraph waypointGraph;
+
+    public bool pregenerate; // Does this node pre-generate its connections
 
     private void Start()
     {
-        for (int i = 0; i < edges.Length; i++)
-            edges[i].ConnectedDistance = Vector3.Distance(transform.position, edges[i].connectedNode.transform.position);
+        waypointGraph = transform.parent.GetComponent<WaypointGraph>();
 
-        edges = MergeSort(edges);
+        if (pregenerate)
+        {
+            edges = new Edge[waypointGraph.nodes.Length];
+            for (int i = 0; i < waypointGraph.nodes.Length; i++)
+                edges[i] = new Edge(waypointGraph.nodes[i].GetComponent<Node>(), Vector3.Distance(transform.position, waypointGraph.nodes[i].transform.position));
+
+            edges = MergeSort(edges);
+
+            Edge[] temp = new Edge[edges.Length - 1];
+            for (int i = 1; i < edges.Length; i++)
+                temp[i - 1] = edges[i];
+            edges = temp;
+        }
+        else
+        {
+            for (int i = 0; i < edges.Length; i++)
+                edges[i].ConnectedDistance = Vector3.Distance(transform.position, edges[i].connectedNode.transform.position);
+
+            edges = MergeSort(edges);
+        }
     }
 
     private void Update()
     {
-        foreach (Edge edge in edges)
-            Debug.DrawLine(transform.position, edge.connectedNode.transform.position, Color.blue);
+        for (int i = 0; i < 6; i++)
+            Debug.DrawLine(transform.position, edges[i].connectedNode.transform.position, Color.blue);
     }
 
     // Merge Sort implementation for sorting each of this nodes edges by distance

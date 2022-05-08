@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 5
-  running: 1
+  running: 0
   knockoutSpeed: 2
   red: {fileID: 2100000, guid: 15a5874b920402f4ab2fd9496dd6141d, type: 2}
   path: []
