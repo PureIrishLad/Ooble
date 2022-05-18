@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+[ExecuteInEditMode]
 public class Node : MonoBehaviour
 {
     public Edge[] edges; // Each edge going from this node
@@ -10,17 +11,26 @@ public class Node : MonoBehaviour
 
     public bool pregenerate; // Does this node pre-generate its connections
 
-    private void Start()
+    public void GenerateEdges()
     {
         waypointGraph = transform.parent.GetComponent<WaypointGraph>();
 
         if (pregenerate)
         {
             edges = new Edge[waypointGraph.nodes.Length];
+            List<Edge> edgelist = new List<Edge>();
+            RaycastHit hit;
             for (int i = 0; i < waypointGraph.nodes.Length; i++)
-                edges[i] = new Edge(waypointGraph.nodes[i].GetComponent<Node>(), Vector3.Distance(transform.position, waypointGraph.nodes[i].transform.position));
-
-            edges = MergeSort(edges);
+            {
+                Vector3 displacement = waypointGraph.nodes[i].transform.position - transform.position;
+                float magnitude = displacement.magnitude;
+                Vector3 dir = displacement / magnitude;
+                // Testing to make sure that this edge does not collide with any world objects
+                if (!Physics.Raycast(transform.position, dir, out hit, magnitude))
+                    edgelist.Add(new Edge(waypointGraph.nodes[i].GetComponent<Node>(), Vector3.Distance(transform.position, waypointGraph.nodes[i].transform.position)));
+            }
+            
+            edges = MergeSort(edgelist.ToArray());
 
             Edge[] temp = new Edge[edges.Length - 1];
             for (int i = 1; i < edges.Length; i++)
@@ -38,7 +48,7 @@ public class Node : MonoBehaviour
 
     private void Update()
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < edges.Length; i++)
             Debug.DrawLine(transform.position, edges[i].connectedNode.transform.position, Color.blue);
     }
 
