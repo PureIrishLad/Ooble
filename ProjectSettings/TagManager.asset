@@ -8,6 +8,7 @@ TagManager:
   - Broom
   - Node
   - WaypointGraph
+  - Ooble
   layers:
   - Default
   - TransparentFX

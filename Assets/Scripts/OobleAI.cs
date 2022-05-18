@@ -11,7 +11,7 @@ public class OobleAI : MonoBehaviour
     public bool running; // Is running
 
     public float knockoutSpeed = 2f; // How fast the player needs to swing to knockout the Ooble
-    private bool knockedOut = false; // True if the Ooble is knocked out
+    public bool knockedOut = false; // True if the Ooble is knocked out
     public Material red; // The material applied to the Ooble after being knocked out
 
     private Rigidbody rb; // This objects rigidbody
@@ -121,9 +121,10 @@ public class OobleAI : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.rigidbody != null && collision.rigidbody.velocity.magnitude >= knockoutSpeed && (collision.rigidbody.tag == "Bat" || collision.rigidbody.tag == "Broom"))
+        if (collision.rigidbody != null && collision.rigidbody.velocity.magnitude >= knockoutSpeed && (collision.rigidbody.tag == "Bat" || collision.rigidbody.tag == "Broom") && running)
         {
             GetComponent<OVRGrabbable>().enabled = true;
+            rb.isKinematic = false;
             knockedOut = true;
         }
     }
@@ -131,5 +132,6 @@ public class OobleAI : MonoBehaviour
     public void OnDiscovered()
     {
         running = true;
+        rb.isKinematic = false;
     }
 }
