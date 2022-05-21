@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class CollectionUnit : MonoBehaviour
 {
-    private int numOobles;
-    private int numDefeated;
-
+    private GameManager gameManager;    
     public GameObject progress;
 
     private void Start()
     {
-        foreach(GameObject ooble in GameObject.FindGameObjectsWithTag("Ooble"))
-            numOobles++;
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
         progress.transform.localScale = new Vector3(1, 0, 1);
         progress.SetActive(false);
@@ -24,10 +21,9 @@ public class CollectionUnit : MonoBehaviour
         {
             progress.SetActive(true);
 
-            Destroy(other.gameObject);
-            numDefeated++;
+            gameManager.RemoveOoble(other.gameObject);
 
-            progress.transform.localScale = new Vector3(1, numDefeated / (float)numOobles, 1);
+            progress.transform.localScale = new Vector3(1, gameManager.numDefeated / (float)(gameManager.numOobles + gameManager.numDefeated), 1);
         }
     }
 }

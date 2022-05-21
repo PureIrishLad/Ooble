@@ -9,6 +9,10 @@ TagManager:
   - Node
   - WaypointGraph
   - Ooble
+  - Spawn Point
+  - GameManager
+  - LeftController
+  - RightController
   layers:
   - Default
   - TransparentFX
