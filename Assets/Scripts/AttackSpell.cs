@@ -30,7 +30,10 @@ public class AttackSpell : MonoBehaviour
             oobleRB.AddForce(direction * f);
 
             if (magnitude <= 2f)
+            {
                 ooble.GetComponent<OobleAI>().knockedOut = true;
+                ooble.GetComponent<OVRGrabbable>().enabled = true;
+            }
         }
 
         Destroy(this.gameObject);

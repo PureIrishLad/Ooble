@@ -66,7 +66,16 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < numOobles; i++)
         {
             GameObject spawnPosition = spawnPositions[i];
-            oobles.Add(Instantiate(ooblePrefab, spawnPosition.transform.position, Quaternion.identity));
+            GameObject ooble = Instantiate(ooblePrefab, spawnPosition.transform.position, Quaternion.identity);
+            OobleAI ai = ooble.GetComponent<OobleAI>();
+
+            DiegeticRotator dr = spawnPosition.transform.parent.GetComponent<DiegeticRotator>();
+
+            dr.onValueChanged = new UnityEngine.Events.UnityEvent<float>();
+            dr.onValueChanged.AddListener(ai.OnDiscovered);
+            dr.rotatablePart.GetComponent<CupboardTrigger>().ooble = ai;
+
+            oobles.Add(ooble);
         }
 
         this.oobles = oobles.ToArray();

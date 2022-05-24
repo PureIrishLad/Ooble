@@ -8,6 +8,7 @@ public class CollectionUnit : MonoBehaviour
     public GameObject progress;
     public GameObject progressBarPivot;
     public GameObject model;
+    public CollectionUnitBeam beam;
     public float maxYOffset;
     public float maxSpeed;
     public Vector3 rotationSpeed;
@@ -27,6 +28,9 @@ public class CollectionUnit : MonoBehaviour
 
         progress.transform.localScale = new Vector3(1, 0, 1);
         progress.SetActive(false);
+
+        beam.gameManager = gameManager;
+        beam.progress = progress;
 
         initialPos = transform.position;
         maxPos = initialPos + new Vector3(0, maxYOffset, 0);
