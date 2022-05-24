@@ -13,6 +13,10 @@ public class OobleAI : MonoBehaviour
 
     private Renderer oobleRenderer; // This objects renderer
 
+    private GameObject collectionUnit;
+    [HideInInspector]
+    public Vector3 initialPos;
+
     [HideInInspector]
     public ParticleSystemHandler ps;
 
@@ -26,6 +30,7 @@ public class OobleAI : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         oobleRenderer = GetComponent<Renderer>();
+        collectionUnit = GameObject.FindGameObjectWithTag("CollectionUnit");
 
         initialScale = transform.localScale;
     }
@@ -49,6 +54,7 @@ public class OobleAI : MonoBehaviour
     private void DestroyThis()
     {
         transform.localScale = Vector3.Lerp(initialScale, new Vector3(0, 0, 0), lerp);
+        transform.position = Vector3.Lerp(initialPos, collectionUnit.transform.position, lerp);
         lerp += Time.deltaTime * 2;
 
         if (lerp > 1.0f)

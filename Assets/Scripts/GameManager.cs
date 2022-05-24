@@ -109,6 +109,7 @@ public class GameManager : MonoBehaviour
         Destroy(ooble.GetComponent<Rigidbody>());
         Destroy(ooble.GetComponent<Collider>());
         OobleAI ai = ooble.GetComponent<OobleAI>();
+        ai.initialPos = ai.transform.position;
         ai.destroy = true;
         ai.ps = ps.GetComponent<ParticleSystemHandler>();
 
