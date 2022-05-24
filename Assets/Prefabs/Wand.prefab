@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3025071336881042039}
   m_Layer: 3
   m_Name: Wand
-  m_TagString: Untagged
+  m_TagString: Wand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -81,8 +81,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21cd01b3dfabbd04ea000dfc36110930, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackSpell: {fileID: 3231258160121532842, guid: ec67fd80587063f4283c60be044f30a8, type: 3}
   telekenisisStrength: 0.05
   inHand: 0
+  attackCooldown: 0.25
 --- !u!1 &5228573306167454198
 GameObject:
   m_ObjectHideFlags: 0

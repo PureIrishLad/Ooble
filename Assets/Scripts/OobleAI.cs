@@ -38,7 +38,10 @@ public class OobleAI : MonoBehaviour
     private void Update()
     {
         if (destroy)
-            DestroyThis();            
+            DestroyThis();   
+        
+        if (knockedOut)
+            oobleRenderer.material = red;
     }
 
     private void OnCollisionEnter(Collision collision)
