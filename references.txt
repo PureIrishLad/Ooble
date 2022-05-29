@@ -1,0 +1,19 @@
+Models:
+
+Laptop model: https://free3d.com/3d-model/notebook-low-poly-version-57341.html
+PcMonitor: https://free3d.com/3d-model/pc-monitor-69557.html
+Keyboard: https://free3d.com/3d-model/keyboard-logitech-988836.html
+Office Chair: https://free3d.com/3d-model/office-chair-480392.html
+Plate: https://free3d.com/3d-model/plate-175700.html
+Pen,Pencil,Sharpener: https://free3d.com/3d-model/pens-and-sharpener-127746.html
+Notebook: https://free3d.com/3d-model/notebook-v1--925811.html
+Tin Can: https://free3d.com/3d-model/tin-can-49500.html
+Vending machine: https://free3d.com/3d-model/vending-machine-20548.html
+
+Sounds:
+
+Shatter: https://freesound.org/people/lurpsis/sounds/444136/
+Whoosh: https://freesound.org/people/original_sound/sounds/364660/
+Tractor Beam: https://freesound.org/people/Deatlev/sounds/254942/
+Telekinesis: https://freesound.org/people/nomiqbomi/sounds/579063/
+Boom: https://freesound.org/people/Reitanna/sounds/242896/
