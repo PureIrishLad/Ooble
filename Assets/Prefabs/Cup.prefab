@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3544527287287025429}
   - component: {fileID: 3544527287287025428}
   - component: {fileID: 3544527287287025431}
+  - component: {fileID: 7696444515123101740}
   m_Layer: 0
   m_Name: Cup
   m_TagString: Untagged
@@ -1062,7 +1063,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3544527287287025430}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.02
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -1087,3 +1088,15 @@ MonoBehaviour:
   m_snapOrientation: 0
   m_snapOffset: {fileID: 0}
   m_grabPoints: []
+--- !u!114 &7696444515123101740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3544527287287025430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc22d41c976f5054983d3f02ea8f839b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

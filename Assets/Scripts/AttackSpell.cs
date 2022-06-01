@@ -8,6 +8,15 @@ public class AttackSpell : MonoBehaviour
     public float gravity;
     public float force;
 
+    private GameManager gameManager;
+
+    private void Awake()
+    {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        AudioSystemHandler a = Instantiate(gameManager.attackSpellFireAudio, transform.position, Quaternion.identity).GetComponent<AudioSystemHandler>();
+        a.Play();
+    }
+
     private void FixedUpdate()
     {
         rb.AddForce(Vector3.down * gravity);
@@ -16,25 +25,40 @@ public class AttackSpell : MonoBehaviour
     {
         if (other.tag == "Wand" || other.tag == "Player") return;
 
-        GameManager manager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-        foreach(GameObject ooble in manager.oobles)
+        Collider[] colls = Physics.OverlapSphere(transform.position, 50);
+
+        foreach(Collider coll in colls)
         {
-            Rigidbody oobleRB = ooble.GetComponent<Rigidbody>();
-            Vector3 displacement = ooble.transform.position - transform.position;
-            float magnitude = displacement.magnitude;
-            Vector3 direction = displacement / magnitude;
+            GameObject obj = coll.gameObject;
+            Rigidbody objrb = obj.GetComponent<Rigidbody>();
 
-            float f = force / (magnitude * magnitude);
-            f = Mathf.Min(force, f);
-
-            oobleRB.AddForce(direction * f);
-
-            if (magnitude <= 2f)
+            if (objrb)
             {
-                ooble.GetComponent<OobleAI>().knockedOut = true;
-                ooble.GetComponent<OVRGrabbable>().enabled = true;
+                Vector3 displacement = objrb.position - transform.position;
+                float magnitude = displacement.magnitude;
+                Vector3 direction = displacement / magnitude;
+
+                float f = force / (magnitude * magnitude);
+                f = Mathf.Min(force, f);
+
+                if (coll.tag == "Ooble")
+                {
+                    OobleAI ai = objrb.GetComponent<OobleAI>();
+                    if (magnitude <= 2f && ai.running)
+                    {
+                        ai.knockedOut = true;
+                        obj.GetComponent<OVRGrabbable>().enabled = true;
+                    }
+                    else
+                        continue;
+                }
+
+                objrb.AddForce(direction * f);
             }
         }
+
+        AudioSystemHandler a = Instantiate(gameManager.attackSpellHitAudio, transform.position, Quaternion.identity).GetComponent<AudioSystemHandler>();
+        a.Play();
 
         Destroy(this.gameObject);
     }

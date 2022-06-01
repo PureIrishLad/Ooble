@@ -20,6 +20,13 @@ public class GameManager : MonoBehaviour
     public int numDefeated;
 
     public GameObject oobleCapturedParticles;
+    public GameObject plateSmashParticles;
+
+    public GameObject oobleCapturedAudio;
+    public GameObject plateSmashAudio;
+    public GameObject attackSpellFireAudio;
+    public GameObject attackSpellHitAudio;
+    public GameObject wandTelekinesisAudio;
 
     private InputDeviceCharacteristics leftControllerCharacteristics = InputDeviceCharacteristics.HeldInHand | InputDeviceCharacteristics.Left | InputDeviceCharacteristics.Controller;
     private InputDeviceCharacteristics rightControllerCharacteristics = InputDeviceCharacteristics.HeldInHand | InputDeviceCharacteristics.Right | InputDeviceCharacteristics.Controller;
@@ -114,6 +121,8 @@ public class GameManager : MonoBehaviour
         }
 
         GameObject ps = Instantiate(oobleCapturedParticles, ooble.transform.position, Quaternion.identity);
+        AudioSystemHandler a = Instantiate(oobleCapturedAudio, ooble.transform.position, Quaternion.identity).GetComponent<AudioSystemHandler>();
+        a.Play();
 
         Destroy(ooble.GetComponent<Rigidbody>());
         Destroy(ooble.GetComponent<Collider>());

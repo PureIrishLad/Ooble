@@ -8,7 +8,7 @@ public class ParticleSystemHandler : MonoBehaviour
     [HideInInspector]
     public bool isPlaying;
 
-    private void Start()
+    private void Awake()
     {
         ps = GetComponent<ParticleSystem>();
     }

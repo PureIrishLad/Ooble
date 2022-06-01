@@ -21,6 +21,8 @@ public class Wand : MonoBehaviour
     private float cooldownTimer;
     private bool cooldown = false;
 
+    private AudioSystemHandler aTelekinesis;
+
     private void Start()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -55,9 +57,7 @@ public class Wand : MonoBehaviour
         if (inHand == 1)
         {
             if (gameManager.rightController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondaryValue) && secondaryValue)
-            {
                 isActive = true;
-            }
 
             if (!cooldown && gameManager.rightController.TryGetFeatureValue(CommonUsages.primaryButton, out primaryValue) && primaryValue)
             {
@@ -69,9 +69,7 @@ public class Wand : MonoBehaviour
         else if (inHand == 2)
         {
             if (gameManager.leftController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondaryValue) && secondaryValue)
-            {
                 isActive = true;
-            }
 
             if (!cooldown && gameManager.leftController.TryGetFeatureValue(CommonUsages.primaryButton, out primaryValue) && primaryValue)
             {
@@ -85,21 +83,42 @@ public class Wand : MonoBehaviour
         {
             foreach(GameObject ooble in oobles)
             {
-                Rigidbody rb = ooble.GetComponent<Rigidbody>();
-                rb.useGravity = true;
+                if (ooble && ooble.GetComponent<OobleAI>().running)
+                {
+                    Rigidbody rb = ooble.GetComponent<Rigidbody>();
+                    rb.useGravity = true;
 
-                Vector3 displacement = transform.position - ooble.transform.position;
-                float magnitude = displacement.magnitude;
-                Vector3 direction = displacement / magnitude;
-                float force = telekenisisStrength / magnitude;
+                    Vector3 displacement = transform.position - ooble.transform.position;
+                    float magnitude = displacement.magnitude;
+                    Vector3 direction = displacement / magnitude;
+                    float force = telekenisisStrength / magnitude;
 
-                if (magnitude < 3f)
-                    rb.useGravity = false;
+                    if (magnitude < 3f)
+                        rb.useGravity = false;
 
-                rb.AddForce(direction * force);
+                    rb.AddForce(direction * force);
+                }
             }
 
-            Debug.Log("Active");
+
+            if (!aTelekinesis)
+            {
+                aTelekinesis = Instantiate(gameManager.wandTelekinesisAudio, transform.position, Quaternion.identity).GetComponent<AudioSystemHandler>();
+                aTelekinesis.Play();
+                aTelekinesis.target = transform;
+            }
+        }
+        else
+        {
+            if (aTelekinesis)
+            {
+                Destroy(aTelekinesis.gameObject);
+            }
+
+            foreach (GameObject ooble in gameManager.oobles)
+            {
+                ooble.GetComponent<Rigidbody>().useGravity = true;
+            }
         }
 
         if (isActive != wasActive && wasActive)
