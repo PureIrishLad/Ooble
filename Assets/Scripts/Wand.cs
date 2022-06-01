@@ -83,7 +83,7 @@ public class Wand : MonoBehaviour
         {
             foreach(GameObject ooble in oobles)
             {
-                if (ooble && ooble.GetComponent<OobleAI>().running)
+                if (ooble && ooble.GetComponent<OobleAI>().running || ooble && ooble.GetComponent<OobleAI>().knockedOut)
                 {
                     Rigidbody rb = ooble.GetComponent<Rigidbody>();
                     rb.useGravity = true;
