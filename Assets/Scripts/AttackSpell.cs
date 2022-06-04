@@ -44,7 +44,7 @@ public class AttackSpell : MonoBehaviour
                 if (coll.tag == "Ooble")
                 {
                     OobleAI ai = objrb.GetComponent<OobleAI>();
-                    if (magnitude <= 2f && ai.running)
+                    if (magnitude <= 2f && (ai.running || ai.knockedOut))
                     {
                         ai.knockedOut = true;
                         obj.GetComponent<OVRGrabbable>().enabled = true;
