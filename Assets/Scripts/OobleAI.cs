@@ -3,46 +3,54 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// Controls Ooble behaviour
 public class OobleAI : MonoBehaviour
 {
-    private GameObject player; // The player
+    // Compass pointer
+    public GameObject pointerPrefab;
+    [HideInInspector]
+    public GameObject pointer;
 
     public float knockoutSpeed = 2f; // How fast the player needs to swing to knockout the Ooble
     public bool knockedOut = false; // True if the Ooble is knocked out
     public Material red; // The material applied to the Ooble after being knocked out
 
+    public float health = 100;
+
     private Renderer oobleRenderer; // This objects renderer
 
     private GameObject collectionUnit;
     [HideInInspector]
-    public Vector3 initialPos;
-
-    [HideInInspector]
-    public ParticleSystemHandler ps;
-
-    [HideInInspector]
-    public bool destroy;
-
+    public Vector3 initialPos; // The initial position of the ooble when it entered the collection units tractor beam
     private Vector3 initialScale;
     private float lerp;
 
+    [HideInInspector]
+    public ParticleSystemHandler ps;
+    [HideInInspector]
+    public AudioSystemHandler a;
+
+    [HideInInspector]
+    public bool destroy; // True if the ooble is in the process of being destroyed
+
+    // Movement and pathfinding
     public float maxSpeed;
     public bool running;
     public List<Node> path = new List<Node>();
+    private List<Node> painted = new List<Node>();
     public int pathIndex = 0;
+    private WaypointGraph waypointGraph;
 
     private Rigidbody rb;
-    private List<Node> painted = new List<Node>();
-    private WaypointGraph waypointGraph;
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
         oobleRenderer = GetComponent<Renderer>();
         collectionUnit = GameObject.FindGameObjectWithTag("CollectionUnit");
         rb = GetComponent<Rigidbody>();
         waypointGraph = GameObject.FindGameObjectWithTag("WaypointGraph").GetComponent<WaypointGraph>();
 
+        // Finding the closest node so when ooble is discovered it runs towards it
         GameObject closest = null;
         float closestDistance = float.MaxValue;
 
@@ -54,14 +62,19 @@ public class OobleAI : MonoBehaviour
                 closest = node;
             }
         }
-
         path.Add(closest.GetComponent<Node>());
 
         initialScale = transform.localScale;
+        pointer = Instantiate(pointerPrefab);
+        pointer.GetComponent<TargetPointer>().positionTarget = transform;
+        pointer.SetActive(false);
     }
 
     private void Update()
     {
+        if (health <= 0)
+            knockedOut = true;
+
         if (!destroy)
         {
             if (!knockedOut && running)
@@ -90,7 +103,7 @@ public class OobleAI : MonoBehaviour
                 // If we have reached the current node, move towards the next one
                 Vector3 pos = path[pathIndex].transform.position;
                 pos.y = transform.position.y;
-                if (Vector3.Distance(transform.position, pos) < 0.2f)
+                if (Vector3.Distance(transform.position, pos) < 0.5f)
                 {
                     pathIndex++;
                 }
@@ -102,6 +115,8 @@ public class OobleAI : MonoBehaviour
             {
                 running = false;
                 oobleRenderer.material = red;
+
+                pointer.SetActive(true);
             }
         }
         else
@@ -148,11 +163,13 @@ public class OobleAI : MonoBehaviour
         }
     }
 
+    // Function gets run when the ooble is discovered
     public void OnDiscovered(float f)
     {
         running = true;
     }
 
+    // Function runs when the ooble is in the process of being destroyed
     private void DestroyThis()
     {
         transform.localScale = Vector3.Lerp(initialScale, new Vector3(0, 0, 0), lerp);
@@ -162,6 +179,7 @@ public class OobleAI : MonoBehaviour
         if (lerp > 1.0f)
         {
             ps.Play();
+            a.Play();
             Destroy(gameObject);
         }
     }

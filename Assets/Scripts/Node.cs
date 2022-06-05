@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 [ExecuteInEditMode]
+// Represents a node in the waypoint graph
 public class Node : MonoBehaviour
 {
     public Edge[] edges; // Each edge going from this node
@@ -11,6 +12,7 @@ public class Node : MonoBehaviour
 
     public bool pregenerate; // Does this node pre-generate its connections
 
+    // Generates the edges to and from this node from other nodes in the graph
     public void GenerateEdges()
     {
         waypointGraph = transform.parent.GetComponent<WaypointGraph>();
@@ -19,14 +21,13 @@ public class Node : MonoBehaviour
         {
             edges = new Edge[waypointGraph.nodes.Length];
             List<Edge> edgelist = new List<Edge>();
-            RaycastHit hit;
             for (int i = 0; i < waypointGraph.nodes.Length; i++)
             {
                 Vector3 displacement = waypointGraph.nodes[i].transform.position - transform.position;
                 float magnitude = displacement.magnitude;
                 Vector3 dir = displacement / magnitude;
                 // Testing to make sure that this edge does not collide with any world objects
-                if (!Physics.Raycast(transform.position, dir, out hit, magnitude))
+                if (!Physics.Raycast(transform.position, dir, magnitude))
                     edgelist.Add(new Edge(waypointGraph.nodes[i].GetComponent<Node>(), Vector3.Distance(transform.position, waypointGraph.nodes[i].transform.position)));
             }
             

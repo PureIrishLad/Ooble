@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Script for easy to use particle system
 public class ParticleSystemHandler : MonoBehaviour
 {
     private ParticleSystem ps;
@@ -15,7 +16,7 @@ public class ParticleSystemHandler : MonoBehaviour
 
     private void Update()
     {
-        if (isPlaying && ps.isStopped)
+        if (ps.particleCount == 0 && isPlaying && ps.isStopped)
             Destroy(gameObject);
     }
 
@@ -23,5 +24,10 @@ public class ParticleSystemHandler : MonoBehaviour
     {
         ps.Play();
         isPlaying = true;
+    }
+
+    public void Stop()
+    {
+        ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
     }
 }

@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Script for easy use audio system
 public class AudioSystemHandler : MonoBehaviour
 {
     private AudioSource a;
+    
     [HideInInspector]
     public bool isPlaying;
+
     public bool destroyOnStop = true;
     public bool followObject = false;
 

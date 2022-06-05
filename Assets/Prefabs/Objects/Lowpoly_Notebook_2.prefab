@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6933735701310524332}
   - component: {fileID: 6933735701323831940}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Lowpoly_Notebook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6933735701310524334}
   - component: {fileID: 6933735701319525444}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Lowpoly_Notebook_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
