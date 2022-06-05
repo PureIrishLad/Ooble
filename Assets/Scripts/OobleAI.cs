@@ -15,6 +15,8 @@ public class OobleAI : MonoBehaviour
     public bool knockedOut = false; // True if the Ooble is knocked out
     public Material red; // The material applied to the Ooble after being knocked out
 
+    public float health = 100;
+
     private Renderer oobleRenderer; // This objects renderer
 
     private GameObject collectionUnit;
@@ -70,6 +72,9 @@ public class OobleAI : MonoBehaviour
 
     private void Update()
     {
+        if (health <= 0)
+            knockedOut = true;
+
         if (!destroy)
         {
             if (!knockedOut && running)
@@ -98,7 +103,7 @@ public class OobleAI : MonoBehaviour
                 // If we have reached the current node, move towards the next one
                 Vector3 pos = path[pathIndex].transform.position;
                 pos.y = transform.position.y;
-                if (Vector3.Distance(transform.position, pos) < 0.2f)
+                if (Vector3.Distance(transform.position, pos) < 0.5f)
                 {
                     pathIndex++;
                 }

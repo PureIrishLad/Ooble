@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public GameObject ooblePrefab;
     public int numOobles; // The number of oobles left
+    public float timeLimit = 60;
 
     // Array of all possible ooble spawn positions
     private GameObject[] spawnPositions;
@@ -42,6 +43,14 @@ public class GameManager : MonoBehaviour
     {
         SpawnOobles();
         StartCoroutine(GetControllers());
+    }
+
+    private void Update()
+    {
+        timeLimit -= Time.deltaTime;
+
+        if (timeLimit < 0)
+            timeLimit = 0;
     }
 
     // Gets the controller using characteristics
