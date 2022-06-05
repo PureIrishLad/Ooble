@@ -10,6 +10,10 @@ Notebook: https://free3d.com/3d-model/notebook-v1--925811.html
 Tin Can: https://free3d.com/3d-model/tin-can-49500.html
 Vending machine: https://free3d.com/3d-model/vending-machine-20548.html
 
+Textures:
+
+Glyphs: https://opengameart.org/content/glyphs
+
 Sounds:
 
 Shatter: https://freesound.org/people/lurpsis/sounds/444136/
@@ -17,3 +21,4 @@ Whoosh: https://freesound.org/people/original_sound/sounds/364660/
 Tractor Beam: https://freesound.org/people/Deatlev/sounds/254942/
 Telekinesis: https://freesound.org/people/nomiqbomi/sounds/579063/
 Boom: https://freesound.org/people/Reitanna/sounds/242896/
+Firework: https://freesound.org/people/derplayer/sounds/587188/

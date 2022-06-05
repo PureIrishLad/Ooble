@@ -5,24 +5,32 @@ using UnityEngine.XR;
 
 public class Wand : MonoBehaviour
 {
-    public GameObject leftHand;
-    public GameObject rightHand;
+    public GameObject leftHand; // Left hand object
+    public GameObject rightHand; // Right hand object
 
-    public GameObject attackSpell;
-    public float telekenisisStrength = 0.05f;
+    public GameObject attackSpell; // Attack spell prefab
+    public float telekenisisStrength = 0.05f; // Strength of telekinesis
 
-    private GameManager gameManager;
-    private GameObject[] oobles;
+    private GameManager gameManager; // Reference to game manager
+    private GameObject[] oobles; // Array of all oobles
+
+    // Variables for telekinesis being enable for both hands
     private bool isActiveR = false;
     private bool wasActiveR;
     private bool isActiveL = false;
     private bool wasActiveL;
 
+    // Cooldown for shooting
     public float attackCooldown;
     private float cooldownTimer;
     private bool cooldown = false;
 
+    // Reference to the telekinesis audio
     private AudioSystemHandler aTelekinesis;
+
+    // References to the particle systems for the left and right hand telekinesis
+    private ParticleSystemHandler pTelekinesisL;
+    private ParticleSystemHandler pTelekinesisR;
 
     private void Start()
     {
@@ -46,6 +54,7 @@ public class Wand : MonoBehaviour
         isActiveR = false;
         isActiveL = false;
 
+        // Getting controller inputs
         if (gameManager.rightController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondaryValueR) && secondaryValueR)
             isActiveR = true;
         if (!cooldown && gameManager.rightController.TryGetFeatureValue(CommonUsages.primaryButton, out bool primaryValueR) && primaryValueR)
@@ -66,11 +75,36 @@ public class Wand : MonoBehaviour
 
         if (isActiveR || isActiveL)
         {
-            foreach(GameObject ooble in oobles)
+            if (isActiveR)
             {
-                if (ooble && ooble.GetComponent<OobleAI>().running || ooble && ooble.GetComponent<OobleAI>().knockedOut)
+                if (!pTelekinesisR) 
+                {
+                    pTelekinesisR = Instantiate(gameManager.telekinesisParticles).GetComponent<ParticleSystemHandler>();
+                    pTelekinesisR.Play();
+                }
+
+                pTelekinesisR.transform.position = rightHand.transform.position;
+            }
+
+            if (isActiveL)
+            {
+                if (!pTelekinesisL)
+                {
+                    pTelekinesisL = Instantiate(gameManager.telekinesisParticles).GetComponent<ParticleSystemHandler>();
+                    pTelekinesisL.Play();
+                }
+
+                pTelekinesisL.transform.position = leftHand.transform.position;
+            }
+
+            // Applying telekinesis forces to all oobles
+            foreach (GameObject ooble in oobles)
+            {
+                if (ooble && (ooble.GetComponent<OobleAI>().running || ooble.GetComponent<OobleAI>().knockedOut))
                 {
                     Rigidbody rb = ooble.GetComponent<Rigidbody>();
+                    if (rb == null) continue;
+
                     rb.useGravity = true;
 
                     if (isActiveR)
@@ -101,7 +135,7 @@ public class Wand : MonoBehaviour
                 }
             }
 
-
+            // Creating a new telekinesis audio object
             if (!aTelekinesis)
             {
                 aTelekinesis = Instantiate(gameManager.wandTelekinesisAudio, transform.position, Quaternion.identity).GetComponent<AudioSystemHandler>();
@@ -116,6 +150,18 @@ public class Wand : MonoBehaviour
 
             foreach (GameObject ooble in gameManager.oobles)
                 ooble.GetComponent<Rigidbody>().useGravity = true;
+        }
+
+        if (!isActiveR && pTelekinesisR)
+        {
+            pTelekinesisR.Stop();
+            pTelekinesisR = null;
+        }
+
+        if (!isActiveL && pTelekinesisL)
+        {
+            pTelekinesisL.Stop();
+            pTelekinesisL = null;
         }
 
         if (isActiveR != wasActiveR && wasActiveR && isActiveL != wasActiveL && wasActiveL)

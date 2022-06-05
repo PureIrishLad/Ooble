@@ -97,9 +97,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3df393900b56504e883f0306ded342b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointerPrefab: {fileID: 1065257158730796188, guid: 1923f8694f7a48246b13e78064670572, type: 3}
   knockoutSpeed: 2
   knockedOut: 0
   red: {fileID: 2100000, guid: 15a5874b920402f4ab2fd9496dd6141d, type: 2}
+  initialPos: {x: 0, y: 0, z: 0}
+  ps: {fileID: 0}
+  destroy: 0
+  maxSpeed: 0
+  running: 0
+  path: []
+  pathIndex: 0
 --- !u!54 &-5577645544560044053
 Rigidbody:
   m_ObjectHideFlags: 0

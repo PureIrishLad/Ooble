@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6982453640226277265}
   - component: {fileID: 654703402435852839}
   - component: {fileID: 4799177271001932544}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: 16734_notebook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 6869917882406096117}
   - component: {fileID: 1362351202717399355}
   - component: {fileID: 1582207859885940797}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Notebook
   m_TagString: Untagged
   m_Icon: {fileID: 0}

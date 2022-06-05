@@ -6,8 +6,9 @@ using UnityEngine.XR;
 public class GameManager : MonoBehaviour
 {
     public GameObject ooblePrefab;
-    public int numOobles;
+    public int numOobles; // The number of oobles left
 
+    // Array of all possible ooble spawn positions
     private GameObject[] spawnPositions;
 
     [HideInInspector]
@@ -19,14 +20,20 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public int numDefeated;
 
+    // Particle object prefabs
     public GameObject oobleCapturedParticles;
     public GameObject plateSmashParticles;
+    public GameObject attackTrailParticles;
+    public GameObject attackExplosionParticles;
+    public GameObject telekinesisParticles;
 
+    // Audio object prefabs
     public GameObject oobleCapturedAudio;
     public GameObject plateSmashAudio;
     public GameObject attackSpellFireAudio;
     public GameObject attackSpellHitAudio;
     public GameObject wandTelekinesisAudio;
+    public GameObject fireworkAudio;
 
     private InputDeviceCharacteristics leftControllerCharacteristics = InputDeviceCharacteristics.HeldInHand | InputDeviceCharacteristics.Left | InputDeviceCharacteristics.Controller;
     private InputDeviceCharacteristics rightControllerCharacteristics = InputDeviceCharacteristics.HeldInHand | InputDeviceCharacteristics.Right | InputDeviceCharacteristics.Controller;
@@ -37,6 +44,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(GetControllers());
     }
 
+    // Gets the controller using characteristics
     private IEnumerator GetControllers()
     {
         List<InputDevice> leftHandedControllers = new List<InputDevice>();
@@ -61,12 +69,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Randomly spawns oobles
     private void SpawnOobles()
     {
         spawnPositions = GameObject.FindGameObjectsWithTag("Spawn Point");
         spawnPositions = Shuffle(spawnPositions);
 
-        numOobles = numOobles >= spawnPositions.Length ? spawnPositions.Length : numOobles;
+        // Making sure we don't try to spawn more oobles than is possible
+        numOobles = Mathf.Min(spawnPositions.Length, numOobles);
 
         List<GameObject> oobles = new List<GameObject>();
 
@@ -88,7 +98,7 @@ public class GameManager : MonoBehaviour
         this.oobles = oobles.ToArray();
     }
 
-    // Fisher-Yates Shuffle Algorithm
+    // Fisher-Yates Shuffle Algorithm for randomly shuffling an array
     private static GameObject[] Shuffle(GameObject[] array)
     {
         int n = array.Length;
@@ -104,6 +114,7 @@ public class GameManager : MonoBehaviour
         return array;
     }
 
+    // Removes an ooble from the game
     public void RemoveOoble(GameObject ooble)
     {
         numDefeated++;
@@ -121,15 +132,21 @@ public class GameManager : MonoBehaviour
         }
 
         GameObject ps = Instantiate(oobleCapturedParticles, ooble.transform.position, Quaternion.identity);
+        GameObject ao = Instantiate(fireworkAudio, ooble.transform.position, Quaternion.identity);
         AudioSystemHandler a = Instantiate(oobleCapturedAudio, ooble.transform.position, Quaternion.identity).GetComponent<AudioSystemHandler>();
         a.Play();
 
+        OobleAI ai = ooble.GetComponent<OobleAI>();
+
+        Destroy(ooble.GetComponent<OVRGrabbable>());
         Destroy(ooble.GetComponent<Rigidbody>());
         Destroy(ooble.GetComponent<Collider>());
-        OobleAI ai = ooble.GetComponent<OobleAI>();
+        Destroy(ai.pointer);
+
         ai.initialPos = ai.transform.position;
         ai.destroy = true;
         ai.ps = ps.GetComponent<ParticleSystemHandler>();
+        ai.a = ao.GetComponent<AudioSystemHandler>();
 
         oobles = temp;
     }

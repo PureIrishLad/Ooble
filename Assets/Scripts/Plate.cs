@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Used for cup and plate shattering behaviour
 public class Plate : MonoBehaviour
 {
     private Rigidbody rb;
@@ -15,7 +16,7 @@ public class Plate : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.rigidbody != null && collision.rigidbody.velocity.magnitude > 1 || rb.velocity.magnitude > 1)
+        if (collision.rigidbody != null && collision.rigidbody.velocity.magnitude > 1 && !collision.rigidbody.isKinematic || rb.velocity.magnitude > 1)
             DestroyThis();
     }
 
@@ -27,6 +28,8 @@ public class Plate : MonoBehaviour
         AudioSystemHandler a = Instantiate(gameManager.plateSmashAudio, transform.position, Quaternion.identity).GetComponent<AudioSystemHandler>();
         a.Play();
 
+        Destroy(GetComponent<OVRGrabbable>());
+        Destroy(GetComponent<Collider>());
         Destroy(gameObject);
     }
 }
