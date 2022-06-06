@@ -17,7 +17,12 @@ public class OobleAI : MonoBehaviour
 
     public float health = 100;
 
-    private Renderer oobleRenderer; // This objects renderer
+    public Renderer oobleRenderer; // This objects renderer
+    public Renderer eyeRenderer;
+
+    public Material knockedOutEyesMaterial;
+
+    public float rotateSpeed = 5.0f;
 
     private GameObject collectionUnit;
     [HideInInspector]
@@ -45,7 +50,6 @@ public class OobleAI : MonoBehaviour
 
     private void Start()
     {
-        oobleRenderer = GetComponent<Renderer>();
         collectionUnit = GameObject.FindGameObjectWithTag("CollectionUnit");
         rb = GetComponent<Rigidbody>();
         waypointGraph = GameObject.FindGameObjectWithTag("WaypointGraph").GetComponent<WaypointGraph>();
@@ -95,14 +99,18 @@ public class OobleAI : MonoBehaviour
                     path.Reverse();
                 }
 
-                // Moving towards the next node
-                transform.LookAt(path[pathIndex].transform);
-                transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-                rb.AddForce(transform.forward * 6f * Time.deltaTime);
-
-                // If we have reached the current node, move towards the next one
                 Vector3 pos = path[pathIndex].transform.position;
                 pos.y = transform.position.y;
+
+                Quaternion lookOnLook = Quaternion.LookRotation(pos - transform.position);
+
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime * rotateSpeed);
+
+                // Moving towards the next node
+                transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
+                rb.AddForce(transform.forward * maxSpeed * Time.deltaTime);
+
+                // If we have reached the current node, move towards the next one
                 if (Vector3.Distance(transform.position, pos) < 0.5f)
                 {
                     pathIndex++;
@@ -115,6 +123,7 @@ public class OobleAI : MonoBehaviour
             {
                 running = false;
                 oobleRenderer.material = red;
+                eyeRenderer.material = knockedOutEyesMaterial;
 
                 pointer.SetActive(true);
             }

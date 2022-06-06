@@ -43,6 +43,7 @@ public class AttackSpell : MonoBehaviour
         // Applying explosive force to all objects in the vicinity
         foreach(Collider coll in colls)
         {
+            if (coll.tag == "Button") continue;
             GameObject obj = coll.gameObject;
             Rigidbody objrb = obj.GetComponent<Rigidbody>();
 
