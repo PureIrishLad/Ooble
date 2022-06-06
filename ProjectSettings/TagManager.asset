@@ -15,6 +15,7 @@ TagManager:
   - RightController
   - CollectionUnit
   - Wand
+  - Button
   layers:
   - Default
   - TransparentFX
@@ -25,8 +26,8 @@ TagManager:
   - Player
   - Ooble
   - Ignore Default
-  - 
-  - 
+  - Ignore all but hands
+  - Hands ignore raycast
   - 
   - 
   - 

@@ -25,4 +25,7 @@ Firework: https://freesound.org/people/derplayer/sounds/587188/
 
 Music:
 
-https://opengameart.org/content/pack-of-loopable-game-music
+Main theme: https://opengameart.org/content/pack-of-loopable-game-music
+Main menu: https://opengameart.org/content/background-music-1
+Lose jingle: https://freesound.org/people/LittleRobotSoundFactory/sounds/270329/
+Win jingle: https://freesound.org/people/LittleRobotSoundFactory/sounds/270545/

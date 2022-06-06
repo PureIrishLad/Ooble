@@ -8,17 +8,20 @@ public class TargetPointer : MonoBehaviour
     public Transform pivot;
     public Transform lookTarget;
     public Transform positionTarget;
+    public Vector3 posOffset = new Vector3 (0, 0.25f, 0);
+    public Vector3 rotOffset = new Vector3(0, 0, 0);
 
     private void Awake()
     {
-        lookTarget = GameObject.FindGameObjectWithTag("CollectionUnit").transform;
+        if (!lookTarget)
+            lookTarget = GameObject.FindGameObjectWithTag("CollectionUnit").transform;
     }
 
     private void Update()
     {
         pivot.LookAt(lookTarget);
-        pivot.rotation = Quaternion.Euler(0, pivot.rotation.eulerAngles.y, 0);
+        pivot.rotation = Quaternion.Euler(rotOffset.x, pivot.rotation.eulerAngles.y + rotOffset.y, rotOffset.z);
 
-        transform.position = positionTarget.position + new Vector3(0, 0.25f, 0);
+        transform.position = positionTarget.position + posOffset;
     }
 }
