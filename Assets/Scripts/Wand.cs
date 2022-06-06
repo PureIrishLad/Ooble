@@ -32,6 +32,9 @@ public class Wand : MonoBehaviour
     private ParticleSystemHandler pTelekinesisL;
     private ParticleSystemHandler pTelekinesisR;
 
+    private bool lastShotFromRight = false;
+    private bool lastShotFromLeft = false;
+
     private void Start()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -54,23 +57,36 @@ public class Wand : MonoBehaviour
         isActiveR = false;
         isActiveL = false;
 
+        bool primaryValueR = false;
+        bool primaryValueL = false;
+
         // Getting controller inputs
         if (gameManager.rightController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondaryValueR) && secondaryValueR)
             isActiveR = true;
-        if (!cooldown && gameManager.rightController.TryGetFeatureValue(CommonUsages.primaryButton, out bool primaryValueR) && primaryValueR)
+        if (gameManager.rightController.TryGetFeatureValue(CommonUsages.primaryButton, out primaryValueR) && primaryValueR && !lastShotFromRight && !cooldown)
         {
             Rigidbody rb = Instantiate(attackSpell, rightHand.transform.position + rightHand.transform.forward * 0.21f, Quaternion.identity).GetComponent<Rigidbody>();
             rb.AddForce(rightHand.transform.forward * 500);
             cooldown = true;
+            lastShotFromRight = true;
+            lastShotFromLeft = false;
         }
 
         if (gameManager.leftController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondaryValueL) && secondaryValueL)
             isActiveL = true;
-        if (!cooldown && gameManager.leftController.TryGetFeatureValue(CommonUsages.primaryButton, out bool primaryValueL) && primaryValueL)
+        if (gameManager.leftController.TryGetFeatureValue(CommonUsages.primaryButton, out primaryValueL) && primaryValueL && !lastShotFromLeft && !cooldown)
         {
             Rigidbody rb = Instantiate(attackSpell, leftHand.transform.position + leftHand.transform.forward * 0.21f, Quaternion.identity).GetComponent<Rigidbody>();
             rb.AddForce(leftHand.transform.forward * 500);
             cooldown = true;
+            lastShotFromRight = false;
+            lastShotFromLeft = true;
+        }
+
+        if (!(primaryValueL && primaryValueR))
+        {
+            lastShotFromLeft = false;
+            lastShotFromRight = false;
         }
 
         if (isActiveR || isActiveL)
