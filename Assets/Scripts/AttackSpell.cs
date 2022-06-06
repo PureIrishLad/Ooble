@@ -60,6 +60,8 @@ public class AttackSpell : MonoBehaviour
                     OobleAI ai = objrb.GetComponent<OobleAI>();
                     if (magnitude <= 2f && (ai.running || ai.knockedOut))
                         ai.health -= 25;
+                    else
+                        continue;
                 }
 
                 objrb.AddForce(direction * f);
